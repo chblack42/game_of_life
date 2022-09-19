@@ -275,5 +275,34 @@ std::string test6_result = R"(#Life 1.06
 6 2
 6 3
 )";
+
+std::string test7 =
+R"((7, 9)
+(8, 9)
+(9, 9)
+(6, 0)
+(6, 1)
+(6, 6)
+(6, 7)
+(10, 6)
+(10, 0)
+(10, 1)
+(10, 7)
+(7, -2)
+(8, -2)
+(9, -2))";
+
+std::string test8 =
+R"((1, 3)
+(2, 3)
+(3, 3)
+(0, 2)
+(4, 2)
+(0, 1)
+(4, 1)
+(1, 0)
+(2, 0)
+(3, 0))";
+
 std::vector<std::string> test_vector = { test1,test2,test3,test4,test5,test6 };
 std::vector<std::string> test_result_vector = { test1_result,test2_result, test3_result,test4_result,test5_result,test6_result };

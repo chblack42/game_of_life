@@ -141,13 +141,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\life\civilization.h" />
-    <ClInclude Include="..\life\civilization_low_pop.h" />
+    <ClInclude Include="..\life\civilization_.h" />
     <ClInclude Include="..\life\coordinate.h" />
     <ClInclude Include="..\life\tests.h" />
     <ClInclude Include="..\life\world.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\impl\civilization_low_pop.cpp" />
+    <ClCompile Include="..\impl\civilization_.cpp" />
     <ClCompile Include="..\impl\main.cpp" />
     <ClCompile Include="..\impl\world.cpp" />
   </ItemGroup>

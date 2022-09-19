@@ -27,7 +27,7 @@
     <ClInclude Include="..\life\civilization.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\life\civilization_low_pop.h">
+    <ClInclude Include="..\life\civilization_.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -38,7 +38,7 @@
     <ClCompile Include="..\impl\world.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\impl\civilization_low_pop.cpp">
+    <ClCompile Include="..\impl\civilization_.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

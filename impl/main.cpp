@@ -8,7 +8,7 @@
 #include <assert.h>
 #include <sstream>
 
-#define TEST false
+#define TEST true
 
 using namespace life;
 
@@ -94,7 +94,7 @@ void gather_input(std::vector<coordinate> & population)
 
 void test()
 {
-    for (int test = 0; test != test_vector.size(); ++test)
+    for (int test = 3; test != test_vector.size(); ++test)
     {
         std::vector<coordinate> population = std::vector<coordinate>();
         gather_input(population, test_vector[test]);

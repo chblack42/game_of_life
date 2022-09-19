@@ -6,7 +6,7 @@
 #include <string>
 #include <iostream>
 #include "life/world.h"
-#include "life/civilization_low_pop.h"
+#include "life/civilization_.h"
 namespace life {
 
 	struct world {
@@ -25,7 +25,7 @@ namespace life {
 				civilization * civ;
 				if (it == map.end())
 				{
-					std::unordered_map<coordinate, civilization *>::const_iterator result = map.insert(hint,std::make_pair(cloest_civilization, new civilization_low_pop<std::vector<bool>>(cloest_civilization, this)));
+					std::unordered_map<coordinate, civilization *>::const_iterator result = map.insert(hint,std::make_pair(cloest_civilization, new civilization_<std::vector<bool>>(cloest_civilization, this)));
 					civ = result->second;
 					hint = result;
 				}
@@ -39,11 +39,13 @@ namespace life {
 			}
 		}
 
-		void add_new_civilization(civilization * new_civilization) 
+		civilization * add_new_civilization(coordinate coord)
 		{
-			std::unordered_map<coordinate, civilization *>::const_iterator map_it = map.find(new_civilization->coord);
+			std::unordered_map<coordinate, civilization *>::const_iterator map_it = map.find(coord);
 			assert(map_it == map.end());
-			map.insert(map_it, std::make_pair(new_civilization->coord, new_civilization));
+			civilization* civ = new civilization_<std::vector<bool>>(coord, this);
+			map.insert(map_it, std::make_pair(civ->coord, civ));
+			return civ;
 		}
 
 		void simulate()
@@ -54,7 +56,7 @@ namespace life {
 				if (begin->second->spawning)
 					continue;
 
-				if (!begin->second->simulate())
+				if (begin->second->simulate()==0)
 				{
 					to_delete.push_back(begin);
 				}
@@ -107,9 +109,9 @@ namespace life {
 		t->populate(population);
 		return t;
 	}
-	void add_new_civilization(world * w, civilization * new_civilization)
+	civilization* add_new_civilization(world * w, coordinate coord)
 	{
-		w->add_new_civilization(new_civilization);
+		return w->add_new_civilization(coord);
 	}
 	void simulate(world * w)
 	{
