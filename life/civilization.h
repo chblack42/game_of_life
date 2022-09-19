@@ -14,7 +14,7 @@ namespace life {
 		uncharted
 	};
 	const int NUM_NEIGHBORS = 9;
-	const int64_t CIVILIZATION_SIZE = 8;
+	const int64_t CIVILIZATION_SIZE = 16;
 	int const NEW_LIFE_AMOUNT = 3;
 
 

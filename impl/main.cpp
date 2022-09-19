@@ -28,7 +28,6 @@ coordinate parse_life_coord(std::string const& coord)
 {
     if (std::regex_match(coord, std::regex("^-?\\d+ -?\\d+")))
     {
-
         size_t x_length = coord.find(" ") - 1; // find difference between start of the first number and end
         std::string x_coord(coord.substr(1, x_length));
 
@@ -154,13 +153,11 @@ void test()
         for (int i = 0; i != 10; ++i)
         {
             simulate(world.get());
-            std::cout << "GEn:" << i + 1 << std::endl;
+            std::cout << "Gen:" << i + 1 << std::endl;
             to_cout(world.get());
         }
         std::string result = to_string(world.get());
         to_cout(world.get());
-        std::vector<coordinate> result_vec = convert_life_106_to_vec(result);
-        std::vector<coordinate> test_vec = convert_life_106_to_vec(test_result_vector[test]);
         assert(convert_life_106_to_vec(result) == convert_life_106_to_vec(test_result_vector[test]));
     }
 
