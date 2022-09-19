@@ -45,7 +45,6 @@ namespace life {
 
 	}
 
-
 	template <> civilization_<std::vector<bool>>::civilization_(coordinate coord, world* the_world) :
 		civilization(coord, the_world)
 	{
@@ -292,8 +291,7 @@ namespace life {
 		return (*adjacent_civilization->second).get_life(adjacent_life_coord) ? status::alive : status::dead;
 	}
 
-
-	template <typename T> int civilization_<T>::border_life(coordinate const& life_coord) {
+	template <> int civilization_<std::unordered_map<coordinate, bool, coordinate::hash_fn>>::border_life(coordinate const& life_coord) {
 		int num_alive_adjacent = 0;
 		status neighborhood[9];
 		int neighborhood_idx = 0;
@@ -303,6 +301,7 @@ namespace life {
 		{
 			for (int x = -1; x != 2; ++x)
 			{
+				assert(neighborhood_idx != 9);
 				coordinate adjacent_coord{ life_coord.x + x, life_coord.y + y };
 				if (x == 0 && y == 0)
 				{
@@ -317,7 +316,62 @@ namespace life {
 				else if (adjacent_coord.x == CIVILIZATION_SIZE || adjacent_coord.x < 0 ||
 					adjacent_coord.y == CIVILIZATION_SIZE || adjacent_coord.y < 0)
 				{
-					status value = find_external_life(life_coord, { x,y },true);
+					status value = find_external_life(life_coord, { x,y }, true);
+
+					neighborhood[neighborhood_idx] = value;
+					if (value == status::alive)
+						num_alive_adjacent++;
+					else if (value == status::uncharted)
+						has_uncharted = true;
+				}
+				else
+				{
+					assert(adjacent_coord.x <= CIVILIZATION_SIZE);
+					assert(adjacent_coord.y <= CIVILIZATION_SIZE);
+					num_alive_adjacent += get_life(adjacent_coord);
+					neighborhood[neighborhood_idx] = get_life(adjacent_coord) ? status::alive : status::dead;
+
+					check_surrounding_life(adjacent_coord);
+				}
+
+				neighborhood_idx++;
+			}
+
+		}
+		if (has_uncharted)
+		{
+			check_and_spawn_external_life(neighborhood, life_coord);
+		}
+		return num_alive_adjacent;
+	};
+
+
+	template <typename T> int civilization_<T>::border_life(coordinate const& life_coord) {
+		int num_alive_adjacent = 0;
+		status neighborhood[9];
+		int neighborhood_idx = 0;
+		bool has_uncharted = false;
+
+		for (int y = 1; y != -2; --y)// move top left to bottom right
+		{
+			for (int x = -1; x != 2; ++x)
+			{
+				assert(neighborhood_idx != 9);
+				coordinate adjacent_coord{ life_coord.x + x, life_coord.y + y };
+				if (x == 0 && y == 0)
+				{
+					neighborhood[neighborhood_idx] = get_life(life_coord) ? status::alive : status::dead;
+
+				}
+				else if ((adjacent_coord.x == CIVILIZATION_SIZE && (coord.x == INT64_MAX || coord.x + (CIVILIZATION_SIZE - 1) == INT64_MAX)) || (adjacent_coord.x < 0 && (coord.x == INT64_MIN || coord.x - CIVILIZATION_SIZE == INT64_MIN)) ||
+					(adjacent_coord.y == CIVILIZATION_SIZE && (coord.y == INT64_MAX || coord.y + (CIVILIZATION_SIZE - 1) == INT64_MAX)) || (adjacent_coord.y < 0 && (coord.y == INT64_MIN || coord.y - CIVILIZATION_SIZE == INT64_MIN)))
+				{
+					neighborhood[neighborhood_idx] = status::dead; //outside the scope of the problem
+				}
+				else if (adjacent_coord.x == CIVILIZATION_SIZE || adjacent_coord.x < 0 ||
+					adjacent_coord.y == CIVILIZATION_SIZE || adjacent_coord.y < 0)
+				{
+					status value = find_external_life(life_coord, { x,y },false);
 
 					neighborhood[neighborhood_idx] = value;
 					if (value == status::alive)
@@ -332,7 +386,6 @@ namespace life {
 					num_alive_adjacent += get_life(adjacent_coord);
 					neighborhood[neighborhood_idx] = get_life(adjacent_coord) ? status::alive : status::dead;
 					
-					check_surrounding_life(adjacent_coord);
 				}
 
 				neighborhood_idx++;
