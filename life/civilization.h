@@ -1,7 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include "life/coordinate.h"
-
+#include <assert.h>
 
 namespace life {
 	struct world;
@@ -26,7 +26,10 @@ namespace life {
 			coord(coord),
 			the_world(the_world) 
 		{
-		};
+			assert(CIVILIZATION_SIZE != 0);
+			assert((CIVILIZATION_SIZE & (CIVILIZATION_SIZE - 1)) == 0);
+			assert(CIVILIZATION_SIZE != UINT64_MAX);
+		}
 
 		virtual uint64_t simulate() = 0;
 		virtual void post_simulate() = 0;
