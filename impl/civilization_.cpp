@@ -359,9 +359,13 @@ namespace life {
 				{
 					continue;
 				}
-
 				coordinate adjacent_coord{ life_coord.x + x, life_coord.y + y };
-				if (adjacent_coord.x == CIVILIZATION_SIZE || adjacent_coord.x < 0 ||
+				if ((adjacent_coord.x == CIVILIZATION_SIZE && (coord.x == INT64_MAX || coord.x + (CIVILIZATION_SIZE - 1) == INT64_MAX)) || (adjacent_coord.x < 0 && (coord.x == INT64_MIN || coord.x - CIVILIZATION_SIZE == INT64_MIN)) ||
+					(adjacent_coord.y == CIVILIZATION_SIZE && (coord.y == INT64_MAX || coord.y + (CIVILIZATION_SIZE - 1) == INT64_MAX)) || (adjacent_coord.y < 0 && (coord.y == INT64_MIN || coord.y - CIVILIZATION_SIZE == INT64_MIN)))
+				{
+					continue; //outside the scope of the problem
+				}
+				else if (adjacent_coord.x == CIVILIZATION_SIZE || adjacent_coord.x < 0 ||
 					adjacent_coord.y == CIVILIZATION_SIZE || adjacent_coord.y < 0)
 				{
 					num_arround += find_external_life(life_coord, { x,y }, false) == status::alive;
