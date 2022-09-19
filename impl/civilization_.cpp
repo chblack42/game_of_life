@@ -510,7 +510,7 @@ namespace life {
 			set_upcoming_life(life, false);
 		return false;
 	}
-	// return true if there are living things in this block
+
 	template <typename T> uint64_t civilization_<T>::simulate()
 	{
 		uint64_t current_lifes = 0;
@@ -560,28 +560,6 @@ namespace life {
 		}
 	}
 
-	template <> void civilization_<std::unordered_map<coordinate, bool, coordinate::hash_fn>>::to_cout_bck()
-	{
-		for (std::unordered_map<coordinate, bool>::const_iterator it = lifes_back_buffer->begin(), end = lifes_back_buffer->end(); it != end;++it)
-		{
-			std::cout << coord.x + it->first.x << " " << coord.y + it->first.y << std::endl;
-		}
-	}
-
-	template <typename T> void civilization_<T>::to_cout_bck()
-	{
-		for (int64_t life_idx = 0; life_idx != lifes->size();++life_idx)
-		{
-			int64_t x = life_idx % CIVILIZATION_SIZE;
-			int64_t y = life_idx / CIVILIZATION_SIZE;
-			if (get_life(coordinate{ x, y }))
-			{
-				std::cout << coord.x + x << " " << coord.y + y << std::endl;
-			}
-		}
-	}
-
-	
 	template <typename T> std::string civilization_<T>::to_string()
 	{
 		std::stringstream ss;

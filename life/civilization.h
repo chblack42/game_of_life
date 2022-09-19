@@ -34,11 +34,10 @@ namespace life {
 		virtual uint64_t simulate() = 0;
 		virtual void post_simulate() = 0;
 		virtual void to_cout() = 0;
-		virtual void check_surrounding_life(coordinate const& life_cord) = 0;
-
+		virtual void check_surrounding_life(coordinate const& life_coord) = 0;
 		virtual std::string to_string() = 0;
-		virtual void add_life(coordinate const& life_cord) = 0;
-		virtual bool get_life(coordinate const& life_cord) = 0;
+		virtual void add_life(coordinate const& life_coord) = 0;
+		virtual bool get_life(coordinate const& life_coord) = 0;
 	};
 	
 }
