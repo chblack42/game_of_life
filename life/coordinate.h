@@ -10,6 +10,14 @@ struct coordinate {
 		return (x == coord.x) && (y == coord.y);
 	}
 
+	bool operator<(const coordinate& coord) const {
+		if (x != coord.x)
+		{
+			return (x < coord.x);
+		}
+		return (y > coord.y);
+	}
+
 	struct hash_fn
 	{
 		size_t operator()(const coordinate& coord) const

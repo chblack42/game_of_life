@@ -8,7 +8,7 @@
 #include <assert.h>
 #include <sstream>
 
-#define TEST true
+#define TEST false
 
 using namespace life;
 
@@ -22,6 +22,30 @@ int64_t convert_to_int64(char const * int64)
     }
     return result;
 }
+
+//used for comparing test results
+coordinate parse_life_coord(std::string const& coord)
+{
+    if (std::regex_match(coord, std::regex("^-?\\d+ -?\\d+")))
+    {
+
+        size_t x_length = coord.find(" ") - 1; // find difference between start of the first number and end
+        std::string x_coord(coord.substr(1, x_length));
+
+        size_t y_legnth = coord.find(")") - (coord.find(" ") + 1); // find difference between start of the second number and end
+        std::string y_coord(coord.substr(coord.find(" ") + 1, y_legnth));
+
+        coordinate coord;
+        coord.x = convert_to_int64(x_coord.c_str());
+        coord.y = convert_to_int64(y_coord.c_str());
+        return coord;
+    }
+    else
+    {
+        throw std::exception("Does not match");
+    }
+}
+
 
 coordinate parse_coord(std::string const& coord)
 {
@@ -92,9 +116,36 @@ void gather_input(std::vector<coordinate> & population)
 }
 
 
+//using for comparing test results
+std::vector<coordinate> convert_life_106_to_vec(std::string life)
+{
+    std::stringstream sentance_stream(life);
+    std::string input_coord;
+    std::vector<coordinate> coords;
+    bool skip_life_ver = true;
+    try {
+        while (getline(sentance_stream, input_coord))
+        {
+            if (skip_life_ver)
+            {
+                skip_life_ver = false;
+                continue;
+            }
+            coords.push_back(parse_life_coord(input_coord));
+        }
+    }
+    catch (...)
+    {
+        std::cout << "Bad input" << std::endl;
+    }
+    std::sort(coords.begin(), coords.end());
+    return coords;
+}
+
+
 void test()
 {
-    for (int test = 3; test != test_vector.size(); ++test)
+    for (int test = 0; test != test_vector.size(); ++test)
     {
         std::vector<coordinate> population = std::vector<coordinate>();
         gather_input(population, test_vector[test]);
@@ -108,7 +159,9 @@ void test()
         }
         std::string result = to_string(world.get());
         to_cout(world.get());
-        assert(result == test_result_vector[test]);
+        std::vector<coordinate> result_vec = convert_life_106_to_vec(result);
+        std::vector<coordinate> test_vec = convert_life_106_to_vec(test_result_vector[test]);
+        assert(convert_life_106_to_vec(result) == convert_life_106_to_vec(test_result_vector[test]));
     }
 
 }

@@ -357,6 +357,7 @@ namespace life {
 				{
 					continue;
 				}
+
 				coordinate adjacent_coord{ life_coord.x + x, life_coord.y + y };
 				if (adjacent_coord.x == CIVILIZATION_SIZE || adjacent_coord.x < 0 ||
 					adjacent_coord.y == CIVILIZATION_SIZE || adjacent_coord.y < 0)
@@ -397,7 +398,7 @@ namespace life {
 		int num_alive_adjacent = 0;
 		int64_t x = life_coord.x;
 		int64_t y = life_coord.y;
-		// just hard code, no need for the overhead with increments and loops -- checking all spaces around life
+		// just hard code, no need for the overhead with increments and loops -- checking all spaces surrounding the life
 		num_alive_adjacent += get_life({ x - 1, y - 1 });
 		check_surrounding_life({ x - 1, y - 1 });
 		num_alive_adjacent += get_life({ x - 1, y });
