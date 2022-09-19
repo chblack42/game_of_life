@@ -27,9 +27,6 @@
     <ClInclude Include="..\life\civilization.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\life\civilization_high_pop.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\life\civilization_low_pop.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -39,9 +36,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\impl\world.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\impl\civilization_high_pop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\impl\civilization_low_pop.cpp">

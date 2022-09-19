@@ -6,7 +6,6 @@
 #include <string>
 #include <iostream>
 #include "life/world.h"
-#include "life/civilization_high_pop.h"
 #include "life/civilization_low_pop.h"
 namespace life {
 
@@ -19,13 +18,7 @@ namespace life {
 			for (std::vector<coordinate>::const_iterator begin = population.begin(), end = population.end(); begin != end; ++begin)
 			{
 				coordinate coord = *begin;
-				int64_t a = (coord.x / CIVILIZATION_SIZE);
-				int64_t b = (coord.x < 0 && coord.x > -CIVILIZATION_SIZE ? -1 : 0);
-				int64_t c = a + b;
-				int64_t d = c * CIVILIZATION_SIZE;
 
-				int64_t x = ((coord.x / CIVILIZATION_SIZE) + (coord.x < 0  ? -1 : 0))* CIVILIZATION_SIZE;
-				int64_t y = ((coord.y / CIVILIZATION_SIZE) + (coord.y < 0  ? -1 : 0)) * CIVILIZATION_SIZE;
 				coordinate cloest_civilization = { ((coord.x / CIVILIZATION_SIZE) + (coord.x < 0 && coord.x > INT64_MIN && coord.x % CIVILIZATION_SIZE != 0 ? -1:0)) * CIVILIZATION_SIZE,
 					((coord.y / CIVILIZATION_SIZE) + (coord.y < 0 && coord.y > INT64_MIN && coord.y % CIVILIZATION_SIZE != 0 ? -1 : 0)) * CIVILIZATION_SIZE };
 				std::unordered_map<coordinate, civilization *>::const_iterator it = map.find(cloest_civilization);
