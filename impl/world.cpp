@@ -8,9 +8,8 @@
 #include "life/world.h"
 #include "life/civilization_high_pop.h"
 #include "life/civilization_low_pop.h"
-// -115,292,150,460,684,957
 namespace life {
-	//keep stack allocation to a minimum
+
 	struct world {
 		std::unordered_map<coordinate, civilization *, coordinate::hash_fn> map;
 
@@ -27,7 +26,8 @@ namespace life {
 
 				int64_t x = ((coord.x / CIVILIZATION_SIZE) + (coord.x < 0  ? -1 : 0))* CIVILIZATION_SIZE;
 				int64_t y = ((coord.y / CIVILIZATION_SIZE) + (coord.y < 0  ? -1 : 0)) * CIVILIZATION_SIZE;
-				coordinate cloest_civilization = { ((coord.x / CIVILIZATION_SIZE) + (coord.x < 0 && coord.x > INT64_MIN && coord.x % CIVILIZATION_SIZE != 0 ? -1:0)) * CIVILIZATION_SIZE,((coord.y / CIVILIZATION_SIZE) + (coord.y < 0 && coord.y > INT64_MIN && coord.y % CIVILIZATION_SIZE != 0 ? -1 : 0)) * CIVILIZATION_SIZE };
+				coordinate cloest_civilization = { ((coord.x / CIVILIZATION_SIZE) + (coord.x < 0 && coord.x > INT64_MIN && coord.x % CIVILIZATION_SIZE != 0 ? -1:0)) * CIVILIZATION_SIZE,
+					((coord.y / CIVILIZATION_SIZE) + (coord.y < 0 && coord.y > INT64_MIN && coord.y % CIVILIZATION_SIZE != 0 ? -1 : 0)) * CIVILIZATION_SIZE };
 				std::unordered_map<coordinate, civilization *>::const_iterator it = map.find(cloest_civilization);
 				civilization * civ;
 				if (it == map.end())
@@ -86,6 +86,7 @@ namespace life {
 				delete begin->second;
 			}
 		}
+
 		void to_cout()
 		{
 			std::cout << "#Life 1.06" << std::endl;
@@ -94,6 +95,7 @@ namespace life {
 				begin->second->to_cout();
 			}
 		}
+
 		std::string to_string()
 		{
 			std::string result  = "#Life 1.06\n";

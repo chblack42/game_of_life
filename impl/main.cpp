@@ -7,7 +7,7 @@
 #include "life/tests.h"
 #include <assert.h>
 #include <sstream>
-#define TEST false
+#define TEST true
 using namespace life;
 
 int64_t convert_to_int64(char const * int64)

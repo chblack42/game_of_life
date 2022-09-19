@@ -8,6 +8,7 @@
 #include "life/world.h"
 #include "life/civilization_low_pop.h"
 #include <sstream>
+#include <bitset>
 namespace life {
 	namespace {
 		namespace locations {
@@ -38,7 +39,7 @@ namespace life {
 			civilization* civ;
 			if (it == map.end())
 			{
-				civ = new civilization_low_pop<std::vector<bool>>(adjacent_civilization, the_world);
+				civ = new civilization_low_pop<std::bitset<CIVILIZATION_SIZE * CIVILIZATION_SIZE>>(adjacent_civilization, the_world);
 				add_new_civilization(the_world, civ);
 			}
 			else
@@ -68,43 +69,43 @@ namespace life {
 		lifes_back_buffer = new T();
 	}
 
-	template <typename T> void civilization_low_pop<T>::add_life(coordinate const& life_cord)
+	template <typename T> void civilization_low_pop<T>::add_life(coordinate const& life_coord)
 	{
 		if (spawning)
-			(*lifes_back_buffer)[get_index(life_cord.x, life_cord.y)] = true;
+			(*lifes_back_buffer)[get_index(life_coord.x, life_coord.y)] = true;
 		else
-			(*lifes)[get_index(life_cord.x, life_cord.y)] = true;
+			(*lifes)[get_index(life_coord.x, life_coord.y)] = true;
 	}
 
-	template <> void civilization_low_pop<std::unordered_map<coordinate, bool, coordinate::hash_fn>>::add_life(coordinate const& life_cord)
+	template <> void civilization_low_pop<std::unordered_map<coordinate, bool, coordinate::hash_fn>>::add_life(coordinate const& life_coord)
 	{
 		if (spawning)
-			(*lifes_back_buffer)[life_cord] = true;
+			(*lifes_back_buffer)[life_coord] = true;
 		else
-			(*lifes)[life_cord] = true;
+			(*lifes)[life_coord] = true;
 	}
 
-	template <typename T> void civilization_low_pop<T>::set_upcoming_life(coordinate const& life_cord, bool living)
+	template <typename T> void civilization_low_pop<T>::set_upcoming_life(coordinate const& life_coord, bool living)
 	{
-		(*lifes_back_buffer)[get_index(life_cord.x, life_cord.y)] = living;
+		(*lifes_back_buffer)[get_index(life_coord.x, life_coord.y)] = living;
 	}
 
-	template <> void civilization_low_pop<std::unordered_map<coordinate,bool,coordinate::hash_fn>>::set_upcoming_life(coordinate const& life_cord, bool living)
+	template <> void civilization_low_pop<std::unordered_map<coordinate,bool,coordinate::hash_fn>>::set_upcoming_life(coordinate const& life_coord, bool living)
 	{
 		if(living)
-			(*lifes_back_buffer)[life_cord] = true;
+			(*lifes_back_buffer)[life_coord] = true;
 	}
 
-	template <typename T> bool civilization_low_pop<T>::get_life(coordinate const& life_cord)
+	template <typename T> bool civilization_low_pop<T>::get_life(coordinate const& life_coord)
 	{
-		return (*lifes)[get_index(life_cord.x, life_cord.y)];
+		return (*lifes)[get_index(life_coord.x, life_coord.y)];
 	}
 
-	template <> bool civilization_low_pop<std::unordered_map<coordinate, bool, coordinate::hash_fn >>::get_life(coordinate const& life_cord)
+	template <> bool civilization_low_pop<std::unordered_map<coordinate, bool, coordinate::hash_fn >>::get_life(coordinate const& life_coord)
 	{
-		if (lifes->find(life_cord) == lifes->end())
+		if (lifes->find(life_coord) == lifes->end())
 			return false;
-		return (*lifes)[life_cord];
+		return (*lifes)[life_coord];
 	}
 
 	template <typename T> void civilization_low_pop<T>::corner_case(neighbor neighbors[9], coordinate const& life_coord)
@@ -218,34 +219,34 @@ namespace life {
 
 	}
 
-	template <typename T> void civilization_low_pop<T>::check_and_spawn_external_life(neighbor neighbors[NUM_NEIGHBORS], coordinate const& life_cord)
+	template <typename T> void civilization_low_pop<T>::check_and_spawn_external_life(neighbor neighbors[NUM_NEIGHBORS], coordinate const& life_coord)
 	{
-		int num_alive = get_life(life_cord);
-		if (life_cord == TOP_LEFT || life_cord == TOP_RIGHT || life_cord == BOTTOM_RIGHT || life_cord == BOTTOM_LEFT) // corner case
+		int num_alive = get_life(life_coord);
+		if (life_coord == TOP_LEFT || life_coord == TOP_RIGHT || life_coord == BOTTOM_RIGHT || life_coord == BOTTOM_LEFT) // corner case
 		{
-			corner_case(neighbors, life_cord);
+			corner_case(neighbors, life_coord);
 		}
 		else if (num_alive == 1)
 		{
 			coordinate adjacent_civ_coord = coord;
-			coordinate adjacent_life_coord = life_cord;
-			if (num_alive && life_cord.x == 0 || life_cord.x == CIVILIZATION_SIZE - 1) // left/right edge
+			coordinate adjacent_life_coord = life_coord;
+			if (num_alive && life_coord.x == 0 || life_coord.x == CIVILIZATION_SIZE - 1) // left/right edge
 			{
 				if (coord.x == INT64_MIN || coord.x + (CIVILIZATION_SIZE - 1) == INT64_MAX)
 					return;
-				num_alive += get_life({ life_cord.x, life_cord.y - 1 });
-				num_alive += get_life({life_cord.x, life_cord.y + 1});
-				adjacent_civ_coord.x += life_cord.x == 0 ? -CIVILIZATION_SIZE : CIVILIZATION_SIZE;
-				adjacent_life_coord.x = life_cord.x == 0 ? CIVILIZATION_SIZE - 1 : 0;
+				num_alive += get_life({ life_coord.x, life_coord.y - 1 });
+				num_alive += get_life({life_coord.x, life_coord.y + 1});
+				adjacent_civ_coord.x += life_coord.x == 0 ? -CIVILIZATION_SIZE : CIVILIZATION_SIZE;
+				adjacent_life_coord.x = life_coord.x == 0 ? CIVILIZATION_SIZE - 1 : 0;
 			}
-			else if (num_alive && life_cord.y == 0 || life_cord.y == CIVILIZATION_SIZE - 1) // top/bottom edge
+			else if (num_alive && life_coord.y == 0 || life_coord.y == CIVILIZATION_SIZE - 1) // top/bottom edge
 			{
 				if (coord.y == INT64_MIN || coord.y + (CIVILIZATION_SIZE - 1) == INT64_MAX)
 					return;
-				num_alive += get_life({ life_cord.x - 1, life_cord.y });
-				num_alive += get_life({ life_cord.x + 1, life_cord.y });
-				adjacent_civ_coord.y += life_cord.y == 0 ? -CIVILIZATION_SIZE : CIVILIZATION_SIZE;
-				adjacent_life_coord.y = life_cord.y == 0 ? CIVILIZATION_SIZE - 1 : 0;
+				num_alive += get_life({ life_coord.x - 1, life_coord.y });
+				num_alive += get_life({ life_coord.x + 1, life_coord.y });
+				adjacent_civ_coord.y += life_coord.y == 0 ? -CIVILIZATION_SIZE : CIVILIZATION_SIZE;
+				adjacent_life_coord.y = life_coord.y == 0 ? CIVILIZATION_SIZE - 1 : 0;
 
 			}
 			if (num_alive == NEW_LIFE_AMOUNT)
@@ -255,10 +256,10 @@ namespace life {
 		}
 	}
 
-	template <typename T> neighbor civilization_low_pop<T>::find_external_life(coordinate const& life_cord, coordinate const& coord_step)
+	template <typename T> neighbor civilization_low_pop<T>::find_external_life(coordinate const& life_coord, coordinate const& coord_step)
 	{
 		coordinate adjacent_texture_coord = coord;
-		coordinate adjacent_life_coord = { life_cord.x + coord_step.x, life_cord.y + coord_step.y };
+		coordinate adjacent_life_coord = { life_coord.x + coord_step.x, life_coord.y + coord_step.y };
 
 
 		if (adjacent_life_coord.x < 0) // left edge
@@ -282,7 +283,7 @@ namespace life {
 			adjacent_texture_coord.y += CIVILIZATION_SIZE;
 			adjacent_life_coord.y = 0;
 		}
-		if (life_cord == coordinate{ 0, 2 })
+		if (life_coord == coordinate{ 0, 2 })
 		{
 			int i = 0;
 		}
@@ -297,22 +298,22 @@ namespace life {
 	}
 
 
-	template <typename T> int civilization_low_pop<T>::boarder_life(coordinate const& life_cord) {
+	template <typename T> int civilization_low_pop<T>::boarder_life(coordinate const& life_coord) {
 		int num_alive_adjacent = 0;
 		neighbor neighborhood_arr[9];
 		int neighborhood_idx = 0;
 		bool has_uncharted = false;
-		if (get_life(life_cord))
+		if (get_life(life_coord))
 			int i = 0;
 
 		for (int y = 1; y != -2; --y)// move top left to bottom right
 		{
 			for (int x = -1; x != 2; ++x)
 			{
-				coordinate adjacent_coord{ life_cord.x + x, life_cord.y + y };
+				coordinate adjacent_coord{ life_coord.x + x, life_coord.y + y };
 				if (x == 0 && y == 0)
 				{
-					neighborhood_arr[neighborhood_idx] = get_life(life_cord) ? neighbor::alive : neighbor::dead;
+					neighborhood_arr[neighborhood_idx] = get_life(life_coord) ? neighbor::alive : neighbor::dead;
 				}
 				else if ((adjacent_coord.x == CIVILIZATION_SIZE && coord.x == INT64_MAX) || (adjacent_coord.x < 0 && coord.x == INT64_MIN) ||
 					(adjacent_coord.y == CIVILIZATION_SIZE && coord.y == INT64_MAX) || (adjacent_coord.y < 0 && coord.y == INT64_MIN))
@@ -322,7 +323,7 @@ namespace life {
 				else if (adjacent_coord.x == CIVILIZATION_SIZE || adjacent_coord.x < 0 ||
 					adjacent_coord.y == CIVILIZATION_SIZE || adjacent_coord.y < 0)
 				{
-					neighbor value = find_external_life(life_cord, { x,y });
+					neighbor value = find_external_life(life_coord, { x,y });
 
 					neighborhood_arr[neighborhood_idx] = value;
 					if (value == neighbor::alive)
@@ -345,16 +346,16 @@ namespace life {
 		}
 		if (has_uncharted)
 		{
-			check_and_spawn_external_life(neighborhood_arr, life_cord);
+			check_and_spawn_external_life(neighborhood_arr, life_coord);
 		}
 		return num_alive_adjacent;
 	};
 
-	template <typename T> int civilization_low_pop<T>::inner_life(coordinate const& life_cord)
+	template <typename T> int civilization_low_pop<T>::inner_life(coordinate const& life_coord)
 	{
 		int num_alive_adjacent = 0;
-		int64_t x = life_cord.x;
-		int64_t y = life_cord.y;
+		int64_t x = life_coord.x;
+		int64_t y = life_coord.y;
 		// just hard code, no need for the overhead with increments and loops
 		num_alive_adjacent += get_life({ x - 1, y - 1 });
 		num_alive_adjacent += get_life({ x - 1, y });
@@ -368,15 +369,33 @@ namespace life {
 		return num_alive_adjacent;
 	}
 
-	template <typename T> int civilization_low_pop<T>::discover_neighborhood(coordinate const& life_cord)
+	template <> int civilization_low_pop<std::unordered_map<coordinate,bool,coordinate::hash_fn>>::inner_life(coordinate const& life_coord)
 	{
-		int64_t x = life_cord.x;
-		int64_t y = life_cord.y;
+		int num_alive_adjacent = 0;
+		int64_t x = life_coord.x;
+		int64_t y = life_coord.y;
+		// just hard code, no need for the overhead with increments and loops
+		num_alive_adjacent += get_life({ x - 1, y - 1 });
+		num_alive_adjacent += get_life({ x - 1, y });
+		num_alive_adjacent += get_life({ x - 1, y + 1 });
+		num_alive_adjacent += get_life({ x, y - 1 });
+		num_alive_adjacent += get_life({ x, y + 1 });
+		num_alive_adjacent += get_life({ x + 1, y - 1 });
+		num_alive_adjacent += get_life({ x + 1, y });
+		num_alive_adjacent += get_life({ x + 1, y + 1 });
+
+		return num_alive_adjacent;
+	}
+
+	template <typename T> int civilization_low_pop<T>::discover_neighborhood(coordinate const& life_coord)
+	{
+		int64_t x = life_coord.x;
+		int64_t y = life_coord.y;
 		if (x == 0 || y == 0 || x == CIVILIZATION_SIZE - 1 || y == CIVILIZATION_SIZE - 1)
 		{
-			return boarder_life(life_cord);
+			return boarder_life(life_coord);
 		}
-		return inner_life(life_cord);
+		return inner_life(life_coord);
 	}
 
 	template <typename T> bool civilization_low_pop<T>::simulate_coord(coordinate const & life)
@@ -477,5 +496,11 @@ namespace life {
 		std::fill(lifes_back_buffer->begin(), lifes_back_buffer->end(), 0);
 
 	}
-
+	template <> void civilization_low_pop<std::bitset<CIVILIZATION_SIZE * CIVILIZATION_SIZE>>::post_simulate()
+	{
+		std::bitset<CIVILIZATION_SIZE* CIVILIZATION_SIZE> * tmp = lifes;
+		lifes = lifes_back_buffer;
+		lifes_back_buffer = tmp;
+		lifes_back_buffer->reset();
+	}
 }
