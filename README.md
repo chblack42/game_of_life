@@ -7,6 +7,7 @@ Set "game_of_life" as the starting project.
 Then run the program (F5) with the desired configuration.
  
 How to test:
+
 Made a quick way to test various configurations
  
 In the `impl/main/h` there is a #define for `TEST`, just set that to true and run the application. If an assert is hit then the test fails.
