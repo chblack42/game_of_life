@@ -10,7 +10,7 @@ How to test:
 
 Made a quick way to test various configurations
  
-In the `impl/main/h` there is a #define for `TEST`, just set that to true and run the application. If an assert is hit then the test fails.
+In the `impl/main.cpp` there is a #define for `TEST`, just set that to true and run the application. If an assert is hit then the test fails.
  
 Information about this solution:
  
